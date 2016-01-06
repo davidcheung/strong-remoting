@@ -1371,12 +1371,17 @@ describe('strong-remoting-rest', function() {
           }
         );
         request(app).get(method.classUrl)
-          .set('Accept', 'text/xml')
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
           .send()
           .expect('Content-Type', /xml/)
           .expect(200, function(err, res) {
-            //TODO - match the customized root element
-            console.log(res.text);
+            expect(res.text).to.equal(
+              '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n'+
+              '<foo>\n  '+
+                '<a>1</a>\n  ' +
+                '<b>2</b>\n'+
+              '</foo>');
             done(err, res);
           });
       });
