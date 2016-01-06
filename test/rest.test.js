@@ -1377,11 +1377,36 @@ describe('strong-remoting-rest', function() {
           .expect('Content-Type', /xml/)
           .expect(200, function(err, res) {
             expect(res.text).to.equal(
-              '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n'+
-              '<foo>\n  '+
+              '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
+              '<foo>\n  ' +
                 '<a>1</a>\n  ' +
-                '<b>2</b>\n'+
+                '<b>2</b>\n' +
               '</foo>');
+            done(err, res);
+          });
+      });
+
+      it('should allow XML output to have no root element', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(cb) {
+            cb(null, {a: 1, b: 2});
+          },
+          {
+            returns: { arg: 'data', type: 'object', root: true,
+            xml: { wrapperElement: false } },
+            http: { path: '/' }
+          }
+        );
+        request(app).get(method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send()
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            console.log(res.text);
+            expect(res.text).to.equal(
+              '<a>1</a>\n' +
+              '<b>2</b>');
             done(err, res);
           });
       });
