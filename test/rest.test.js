@@ -1386,31 +1386,6 @@ describe('strong-remoting-rest', function() {
           });
       });
 
-      it('should allow XML output to have no root element', function(done) {
-        var method = givenSharedStaticMethod(
-          function bar(cb) {
-            cb(null, {a: 1, b: 2});
-          },
-          {
-            returns: { arg: 'data', type: 'object', root: true,
-            xml: { wrapperElement: false } },
-            http: { path: '/' }
-          }
-        );
-        request(app).get(method.classUrl)
-          .set('Accept', 'application/xml')
-          .set('Content-Type', 'application/json')
-          .send()
-          .expect('Content-Type', /xml/)
-          .expect(200, function(err, res) {
-            console.log(res.text);
-            expect(res.text).to.equal(
-              '<a>1</a>\n' +
-              '<b>2</b>');
-            done(err, res);
-          });
-      });
-
       it('should produce xml from json objects with toXML()', function(done) {
         var method = givenSharedStaticMethod(
           function bar(a, cb) {
